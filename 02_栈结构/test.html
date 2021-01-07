@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>栈的封装</title>
+</head>
+<body>
+    <script>
+        //封装栈类
+        function Stack() {
+           // 栈中的属性
+           this.items = []
+           // 栈的相关操作
+        //    1、将元素压入栈
+               Stack.prototype.push = function (element) {
+                   this.items.push(element)
+               }
+        //    2、从栈中取出元素
+               Stack.prototype.pop = function () {
+                   return this.items.pop()
+               }
+        //    3、查看一下栈顶元素
+               Stack.prototype.peek = function () {
+                   return this.items[this.items.length - 1]
+               }
+        //    4、判断栈是否为空
+               Stack.prototype.isEmpty = function () {
+                   return this.items.length == 0
+               }
+        //    5、获取栈中元素的个数
+               Stack.prototype.size = function () {
+                   return this.items.length
+               }
+        //    6、toString方法
+               Stack.prototype.toString = function () {
+                   var resultString = ''
+                   for (var i = 0; i < this.items.length; i++) {
+                       resultString += this.items[i] + ''
+                   }
+                   return resultString
+               }
+        }
+        // 栈的使用
+        var s = new Stack()
+        s.push(20)
+        s.push(40)
+        s.push(60)
+        s.push(80)
+        // alert(s)
+
+        s.pop()
+        s.pop() 
+        // alert(s) // 20 40
+
+        // alert(s.peek()) // 40
+        // alert(s.size()) // 2
+
+        // 利用栈结构的特点封装实现十进制转换为二进制的方法。
+        function dec2bin(dec) {
+            // new 一个 Map，保存余数
+            const stack = new Stack();
+            // 当不确定循环次数时，使用 while 循环
+            while (dec > 0) {
+                // 除二取余法
+                stack.push(dec % 2); // 获取余数，放入栈中
+                dec = Math.floor(dec / 2); // 除数除以二，向下取整
+            }
+            let binaryString = '';
+            // 不断地从栈中取出元素（0 或 1），并拼接到一起。
+            while (!stack.isEmpty()) {
+                binaryString += stack.pop();
+            }
+            return binaryString;
+        }
+        alert(dec2bin(100))  // 1100100
+        // 100/2  50  0
+        // 50/2   25  0
+        // 25/2   12  1
+        // 12/2   6   0
+        // 6/2    3   0
+        // 3/2    1   1
+        // 1/2    0   1
+
+    </script>
+</body>
+</html>
