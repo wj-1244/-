@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>双向链表</title>
+</head>
+<body>
+    <script>
+        // 单向链表和双向链表
+            // 单向链表
+                // 只能从头遍历到尾或者从尾遍历到头（一般从头到尾）。
+                // 链表相连的过程是单向的，实现原理是上一个节点中有指向下一个节点的引用。
+                // 单向链表有一个比较明显的缺点：可以轻松到达下一个节点，但回到前一个节点很难，在实际开发中, 经常会遇到需要回到上一个节点的情况。
+            // 双向链表
+                // 既可以从头遍历到尾，也可以从尾遍历到头。
+                // 链表相连的过程是双向的。实现原理是一个节点既有向前连接的引用，也有一个向后连接的引用。
+                // 双向链表可以有效的解决单向链表存在的问题。
+                // 双向链表缺点：
+                // 每次在插入或删除某个节点时，都需要处理四个引用，而不是两个，实现起来会困难些。
+                // 相对于单向链表，所占内存空间更大一些。
+                // 但是，相对于双向链表的便利性而言，这些缺点微不足道。
+
+        // 双向链表结构
+            // 双向链表不仅有 head 指针指向第一个节点，而且有 tail 指针指向最后一个节点。
+            // 每一个节点由三部分组成：item 储存数据、prev 指向前一个节点、next 指向后一个节点。
+            // 双向链表的第一个节点的 prev 指向 null。
+            // 双向链表的最后一个节点的 next 指向 null。
+       // 双向链表常见的操作
+            // append(element) 向链表尾部追加一个新元素。
+            // insert(position, element) 向链表的指定位置插入一个新元素。
+            // getElement(position) 获取指定位置的元素。
+            // indexOf(element) 返回元素在链表中的索引。如果链表中没有该元素就返回 -1。
+            // update(position, element) 修改指定位置上的元素。
+            // removeAt(position) 从链表中的删除指定位置的元素。
+            // remove(element) 从链表删除指定的元素。
+            // isEmpty() 如果链表中不包含任何元素，返回 trun，如果链表长度大于 0 则返回 false。
+            // size() 返回链表包含的元素个数，与数组的 length 属性类似。
+            // toString() 由于链表项使用了 Node 类，就需要重写继承自 JavaScript 对象默认的 toString 方法，让其只输出元素的值。
+            // forwardString() 返回正向遍历节点字符串形式。
+            // backwordString() 返回反向遍历的节点的字符串形式。
+
+        function DoublyLinkedList() {
+            // 内部的类：节点类
+            function Node(data) {
+                this.data = data
+                this.prev = null
+                this.next = null
+            }
+            //属性
+            this.head = null
+            this.tail = null
+            this.length = 0
+            //添加
+            DoublyLinkedList.prototype.append = function (data) {
+                // 1、创建新的节点
+                var newNode = new Node(data)
+                // 2、判断是否添加的是第一个节点
+                if(this.length == 0) {
+                    this.head = newNode
+                } else {
+                    var current = this.head
+                    while (current.next) {
+                        current = current.next
+                    }
+                    current.next = newNode
+                }
+                this.length += 1
+            }
+            // 将链表转成字符串形式
+            DoublyLinkedList.prototype.toString = function () {
+                return this.backwordString()
+            }
+            DoublyLinkedList.prototype.forwardString = function () {
+                // 1、定义变量
+                var current = this.tail
+                var resultString = ''
+                // 2、依次向后遍历，获取每一个节点
+                while (current) {
+                    resultString += current.data + ' '
+                    current = current.prev
+                }
+                return resultString
+            }
+            DoublyLinkedList.prototype.backwordString = function () {
+                // 1、定义变量
+                var current = this.head
+                var resultString = ''
+                // 2、依次向后遍历，获取每一个节点
+                while (current) {
+                    resultString += current.data + ' '
+                    current = current.next
+                }
+                return resultString
+            }
+            DoublyLinkedList.prototype.insert = function (position,data) {
+                if (position < 0 || position > this.length) return false
+                var newDode = new Node(data)
+                if(this.length == 0) {
+                    this.head = newDode
+                    this.tail = newDode
+                } else {
+                    if(position == 0) {
+                        this.head.prev = newDode
+                        newDode.next = this.head
+                        this.head = newDode
+                    }else if(position == this.length){
+                        newDode.prev = this.tail
+                        this.tail.next = newDode
+                        console.log(newDode)
+                        this.tail = newDode
+                        console.log(newDode,'-------')
+                    }else{
+                        var current = this.head
+                        var index = 0
+                        while (index++ < position) {
+                          current = current.next
+                        }
+                        console.log(current)
+                        newDode.next = current
+                        console.log(current,'1111111111')
+                        newDode.prev = current.prev
+                        console.log(current,'22222222222')
+                        current.prev.next = newDode
+                        console.log(current,'333333333')
+                        current.prev = newDode
+                    }
+                }
+                this.length +=1
+                return true
+            }
+            DoublyLinkedList.prototype.get = function (position) {
+                if (position < 0 || position >= this.length) return null
+                var current = this.head
+                var index = 0
+                while (index++ < position) {
+                    current = current.next
+                }
+                return current.data
+            }
+            DoublyLinkedList.prototype.indexOf = function (data) {
+                var current = this.head
+                var index = 0
+                while (current) {
+                    if(current.data == data){
+                        return index
+                    }
+                    current = current.next
+                    index +=1
+                }
+                return -1
+            }
+            DoublyLinkedList.prototype.update = function (position,newData) {
+                if (position < 0 || position >= this.length) return false
+                var current = this.head
+                var index = 0
+                while (index++ < position) {
+                    current = current.next
+                }
+                current.data = newData
+                return true
+            }
+            DoublyLinkedList.prototype.removeAt = function (position) {
+                if (position < 0 || position >= this.length) return null
+                
+                var current = this.head
+                if(this.length == 1) {
+                    this.head = null
+                    this.tail = null
+                } else {
+                    if (position == 0) {
+                        this.head.next.prev = null
+                        this.head = this.head.next 
+                    } else if(position == this.length-1){
+                        current = this.tail
+                        this.tail.prev.next = null
+                        this.tail = this.tail.prev 
+                    } else {
+                        var index = 0
+                        while (index++ < position) {
+                            current = current.next
+                        }
+                        current.prev.next = current.next
+                        current.next.prev = current.prev
+                    }
+                }
+                this.length -=1
+                return current.data
+            }
+            DoublyLinkedList.prototype.remove = function (data) {
+                var index = this.indexOf(data)
+                return this.removeAt(index)
+            }
+        }
+
+        //测试
+        var list = new DoublyLinkedList()
+        list.append('a')
+        list.append('b')
+        list.append('c')
+        // alert(list)
+        // alert(list.backwordString())
+        // alert(list.forwardString())
+        list.insert(0,'aaa')
+        // list.insert(4,'bbb')
+        // list.insert(2,'ccc')
+        list.update(0,'111')
+        alert(list)
+        list.remove('111')
+        alert(list)
+        
+    </script>
+</body>
+</html>
